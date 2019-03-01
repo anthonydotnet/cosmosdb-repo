@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
-    <PackageId>DangEasy.CosmosDb</PackageId>
+    <PackageId>DangEasy.CosmosDb.Repository</PackageId>
     <PackageVersion>0.1.0</PackageVersion>
     <Authors>Anthony Dang</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <Owners>Anthony Dang</Owners>
     <PackageProjectUrl>https://github.com/anthonydotnet/cosmosdb-repo</PackageProjectUrl>
     <Summary>This is a fork of https://www.nuget.org/packages/DocumentDB.Repository which is now ported to .Net Standard with a few enhancements.</Summary>
-    <Title>DangEasy.CosmosDb</Title>
-    <Description>This is a fork of https://www.nuget.org/packages/DocumentDB.Repository which is now ported to .Net Standard with a few enhancements.</Description>
+    <Title>DangEasy.CosmosDb.Repository</Title>
+    <Description>A simple Cosmos DB repository pattern for dotnet Standard 2.0.</Description>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
