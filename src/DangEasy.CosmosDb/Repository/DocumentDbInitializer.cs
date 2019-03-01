@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Client.TransientFaultHandling;
 using Microsoft.Azure.Documents.Client.TransientFaultHandling.Strategies;
 
-namespace DocumentDB.Repository
+namespace Dang.CosmosDb.Repository
 {
     public class DocumentDbInitializer : IDocumentDbInitializer
     {
         public IReliableReadWriteDocumentClient GetClient(string endpointUrl, string authorizationKey, ConnectionPolicy connectionPolicy = null)
         {
             if (string.IsNullOrWhiteSpace(endpointUrl))
-                throw new ArgumentNullException("endpointUrl");
+                throw new ArgumentNullException(nameof(endpointUrl));
 
             if (string.IsNullOrWhiteSpace(authorizationKey))
-                throw new ArgumentNullException("authorizationKey");
+                throw new ArgumentNullException(nameof(authorizationKey));
 
             var documentClient = new DocumentClient(new Uri(endpointUrl), authorizationKey, connectionPolicy ?? new ConnectionPolicy());
 

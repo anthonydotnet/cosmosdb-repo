@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DocumentDb.Repository.Samples.Model
+namespace DangEasy.CosmosDb.Samples.Model
 {
     public class Person
     {
-        [JsonProperty(PropertyName = "id")]
-        public string FullName {
+        [JsonProperty("id")]
+        public string Id
+        {
             get { return FirstName + " " + LastName; }
         }
         public string FirstName { get; set; }

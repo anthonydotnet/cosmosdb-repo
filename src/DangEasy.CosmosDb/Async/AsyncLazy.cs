@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace DocumentDb.Repository.Infrastructure
+namespace DangEasy.CosmosDb.Repository.Async
 {
     public class AsyncLazy<T> : Lazy<Task<T>>
     {

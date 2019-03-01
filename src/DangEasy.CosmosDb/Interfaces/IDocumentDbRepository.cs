@@ -5,13 +5,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace DocumentDB.Repository
+namespace DangEasy.CosmosDb.Interfaces
 {
     public interface IDocumentDbRepository<T> where T : class
     {
-        Task<bool> RemoveAsync(RequestOptions requestOptions = null);
-        Task<bool> RemoveAsync(string id, RequestOptions requestOptions = null);
-        Task<T> AddOrUpdateAsync(T entity, RequestOptions requestOptions = null);
+        Task<T> CreateAsync(T entity, RequestOptions requestOptions = null);
+        Task<T> UpdateAsync(T entity, RequestOptions requestOptions = null);
+        Task<bool> DeleteAsync(string id, RequestOptions requestOptions = null);
+
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> GetAllAsync();
@@ -19,5 +20,7 @@ namespace DocumentDB.Repository
         Task<T> FirstOrDefaultAsync(Func<T, bool> predicate);
         Task<IQueryable<T>> WhereAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> QueryAsync();
+
+        Task<IQueryable<T>> QueryBySql(string sqlQuery, FeedOptions options = null);
     }
 }

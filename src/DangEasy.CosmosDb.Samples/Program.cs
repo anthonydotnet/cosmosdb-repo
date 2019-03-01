@@ -1,41 +1,53 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DocumentDB.Repository;
-using DocumentDb.Repository.Samples.Model;
-using Microsoft.Azure.Documents.Client.TransientFaultHandling;
+using DangEasy.CosmosDb.Repository;
+using DangEasy.CosmosDb.Samples.Model;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Extensions.Configuration;
 
-namespace DocumentDb.Repository.Samples
+namespace DangEasy.CosmosDb.Samples
 {
     internal class Program
     {
-        public static IReliableReadWriteDocumentClient Client { get; set; }
+        internal Program()
+        {
+            var builder = new ConfigurationBuilder()
+                           .SetBasePath(Directory.GetCurrentDirectory())
+                           .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            Configuration = builder.Build();
+
+            string endpointUrl = Configuration["AppSettings:EndpointUrl"];
+            string authorizationKey = Configuration["AppSettings:AuthorizationKey"];
+
+            // get the Azure DocumentDB client
+            Client = new DocumentClient(new Uri(endpointUrl), authorizationKey);
+
+        }
+
+        public static DocumentClient Client { get; set; }
+
+        public static IConfigurationRoot Configuration { get; set; }
 
         private static void Main(string[] args)
         {
-            IDocumentDbInitializer init = new DocumentDbInitializer();
-
-            string endpointUrl = ConfigurationManager.AppSettings["azure.documentdb.endpointUrl"];
-            string authorizationKey = ConfigurationManager.AppSettings["azure.documentdb.authorizationKey"];
-
-            // get the Azure DocumentDB client
-            Client = init.GetClient(endpointUrl, authorizationKey);
-
             // Run demo
-            Task t = MainAsync(args);
-            t.Wait();
+            var p = new Program();
+            p.MainAsync().Wait();
         }
 
-        private static async Task MainAsync(string[] args)
+        internal async Task MainAsync()
         {
-            string databaseId = ConfigurationManager.AppSettings["azure.documentdb.databaseId"];
+            string databaseName = Configuration["AppSettings:MyDatabaseName"];
+            DeleteDatabase(databaseName);
 
             // create repository for persons and set Person.FullName property as identity field (overriding default Id property name)
-            DocumentDbRepository<Person> repo = new DocumentDbRepository<Person>(Client, databaseId, null, p => p.FullName);
-            
+            var repo = new DocumentDbRepository<Person>(Client, databaseName);
+
             // output all persons in our database, nothing there yet
             await PrintPersonCollection(repo);
 
@@ -54,7 +66,7 @@ namespace DocumentDb.Repository.Samples
             };
 
             // add person to database's collection (if collection doesn't exist it will be created and named as class name -it's a convenction, that can be configured during initialization of the repository)
-            matt = await repo.AddOrUpdateAsync(matt);
+            matt = await repo.CreateAsync(matt);
 
             // create another person
             Person jack = new Person
@@ -66,7 +78,7 @@ namespace DocumentDb.Repository.Samples
             };
 
             // add jack to collection
-            jack = await repo.AddOrUpdateAsync(jack);
+            jack = await repo.CreateAsync(jack);
 
             // should output person and his two phone numbers
             await PrintPersonCollection(repo);
@@ -78,13 +90,13 @@ namespace DocumentDb.Repository.Samples
             matt.PhoneNumbers.RemoveAt(1);
 
             // should update person
-            await repo.AddOrUpdateAsync(matt);
+            await repo.UpdateAsync(matt);
 
             // should output Matt with just one phone number
             await PrintPersonCollection(repo);
 
             // get Matt by his Id
-            Person justMatt = await repo.GetByIdAsync(matt.FullName);
+            Person justMatt = await repo.GetByIdAsync(matt.Id);
             Console.WriteLine("GetByIdAsync result: " + justMatt);
 
             // ... or by his first name
@@ -110,16 +122,15 @@ namespace DocumentDb.Repository.Samples
             var jacksCount = await repo.CountAsync(p => p.FirstName == "Jack");
 
             // remove matt from collection
-            await repo.RemoveAsync(matt.FullName);
+            await repo.DeleteAsync(matt.Id);
 
             // remove jack from collection
-            await repo.RemoveAsync(jack.FullName);
+            await repo.DeleteAsync(jack.Id);
 
             // should output nothing
             await PrintPersonCollection(repo);
-            
-            // remove collection
-            await repo.RemoveAsync();
+
+            DeleteDatabase(databaseName);
         }
 
         private static async Task PrintPersonCollection(DocumentDbRepository<Person> repo)
@@ -127,6 +138,16 @@ namespace DocumentDb.Repository.Samples
             IEnumerable<Person> persons = await repo.GetAllAsync();
 
             persons.ToList().ForEach(Console.WriteLine);
+        }
+
+
+        private void DeleteDatabase(string databaseName)
+        {
+            var database = Client.CreateDatabaseQuery().Where(db => db.Id == databaseName).ToArray().FirstOrDefault();
+            if (database != null)
+            {
+                Client.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri(databaseName)).Wait();
+            }
         }
     }
 }

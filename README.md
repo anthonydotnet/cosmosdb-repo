@@ -1,55 +1,52 @@
-Simple repository pattern for [Cosmos DB](https://azure.microsoft.com/en-us/services/cosmos-db/)
+Simple repository pattern for [Cosmos DB](https://azure.microsoft.com/en-us/services/cosmos-db/) for dotnet Standard 2.0. 
 
-[![Nuget](https://img.shields.io/badge/nuget-1.2.0-blue.svg?maxAge=3600)](https://www.nuget.org/packages/DocumentDB.Repository/1.2.0)
+[![Nuget](https://img.shields.io/badge/nuget-0.1.0-blue.svg?maxAge=3600)](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository)
+
+Originally forked from [https://github.com/Crokus/cosmosdb-repo](https://github.com/Crokus/cosmosdb-repo) 
+
 
 # Installation
 
-Use NuGet to install the [package](https://www.nuget.org/packages/DocumentDB.Repository/1.2.0).
+Use NuGet to install the [package](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository/).
 
 ```
-PM> Install-Package DocumentDB.Repository
+PM> Install-Package DangEasy.CosmosDB.Repository
 ```
 
 # Getting started
 
-## Step 1: Get DocumentDB client
+## Step 1: Get Azure CosmosDB client
 
-Before you can play with your DocumentDB database you need to get the DocumentDB Client by passing your endopointUrl and  authorizationKey (primary).
+Before you can play with CosmosDB you need to create the Azure Client by passing your endopointUrl and  authorizationKey (primary).
 
 ```csharp
 internal class Program
 {
-    public static IReliableReadWriteDocumentClient Client { get; set; }
+    public DocumentClient Client { get; set; }
 
 	private static void Main(string[] args)
-	{
-		IDocumentDbInitializer init = new DocumentDbInitializer();
-
-		string endpointUrl = ConfigurationManager.AppSettings["azure.documentdb.endpointUrl"];
-		string authorizationKey = ConfigurationManager.AppSettings["azure.documentdb.authorizationKey"];
-
+	{		
 		// get the Azure DocumentDB client
-		Client = init.GetClient(endpointUrl, authorizationKey);
+		Client = init.GetClient(<EndpointUrl>, <AuthorizationKey>);
 
-		// Run demo
-		Task t = MainAsync(args);
-		t.Wait();
+        // Run demo
+        var p = new Program();
+        p.MainAsync().Wait();
 	}
 }    
 ```
 
 ## Step 2: Create Repository and use it with your POCO objects
 
-With the client in place create a repository providing database id (will be created if it doesn't exist). 
+With the client in place create a repository providing database name and collection name. If you do not pass in a collection name, then the name of the Type will be used. In the example below the collection will be called Person. 
+
 Now it's really easy to do the CRUD operations:
 
 ```csharp
-private static async Task MainAsync(string[] args)
+public async Task MainAsync(string[] args)
 {
-	string databaseId = ConfigurationManager.AppSettings["azure.documentdb.databaseId"];
-
 	// create repository for persons
-	DocumentDbRepository<Person> repo = new DocumentDbRepository<Person>(Client, databaseId);
+	var repo = new DocumentDbRepository<Person>(Client, <MyDatabaseName>);
 
 	// create a new person
 	Person matt = new Person
@@ -102,10 +99,10 @@ private static async Task MainAsync(string[] args)
 	var smiths = (await repo.WhereAsync(p => p.LastName.Equals("Smith", StringComparison.OrdinalIgnoreCase))).ToList();
 	
 	// count all persons
-        var personsCount = await repo.CountAsync();
+    var personsCount = await repo.CountAsync();
 
-        // count all jacks
-        var jacksCount = await repo.CountAsync(p => p.FirstName == "Jack");
+    // count all jacks
+    var jacksCount = await repo.CountAsync(p => p.FirstName == "Jack");
 	
 	// remove matt from collection
 	await repo.RemoveAsync(matt.Id);
@@ -115,7 +112,7 @@ private static async Task MainAsync(string[] args)
 }
 ```
 
-Full example can be found [here](https://github.com/Crokus/documentdb-repo/blob/master/src/DocumentDb.Repository.Samples/Program.cs).
+Full example can be found [here](https://github.com/anthonydotnet/cosmosdb-repo/blob/master/src/DangEasy.CosmosDB.Repository.Samples/Program.cs).
 
 # License
 

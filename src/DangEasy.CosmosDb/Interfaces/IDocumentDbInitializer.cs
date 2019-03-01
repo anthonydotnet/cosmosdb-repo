@@ -1,8 +1,8 @@
-﻿using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Client.TransientFaultHandling;
 using System.Threading.Tasks;
 
-namespace DocumentDB.Repository
+namespace Dang.CosmosDb.Interfaces
 {
     public interface IDocumentDbInitializer
     {
