@@ -9,10 +9,7 @@ namespace Example.Console.Models
     public class Person
     {
         [JsonProperty("id")]
-        public string Id
-        {
-            get { return FirstName + " " + LastName; }
-        }
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDayDateTime { get; set; }

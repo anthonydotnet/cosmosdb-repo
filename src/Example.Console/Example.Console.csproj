@@ -17,6 +17,6 @@
     <Compile Remove="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DangEasy.CosmosDb\DangEasy.CosmosDb.csproj" />
+    <ProjectReference Include="..\DangEasy.CosmosDb.Repository\DangEasy.CosmosDb.Repository.csproj" />
   </ItemGroup>
 </Project>

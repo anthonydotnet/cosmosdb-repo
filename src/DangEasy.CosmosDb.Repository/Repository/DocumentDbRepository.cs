@@ -1,3 +1,4 @@
+using DangEasy.Interfaces.Database;
 using DangEasy.CosmosDb.Repository.Async;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
@@ -7,12 +8,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
-using DangEasy.Interfaces.Database;
 
 namespace DangEasy.CosmosDb.Repository
 {
-    public class DocumentDbRepository<TId, TEntity> : IRepositoryExtended<TId, TEntity>
-        where TId : class
+    public class DocumentDbRepository<TEntity> : IRepositoryExtended<TEntity>
         where TEntity : class
     {
         const int MIN_THROUGHPUT = 400;
@@ -64,7 +63,7 @@ namespace DangEasy.CosmosDb.Repository
         }
 
 
-        public async Task<bool> DeleteAsync(TId id)
+        public async Task<bool> DeleteAsync(object id)
         {
             var docUri = UriFactory.CreateDocumentUri((await _database).Id, (await _collection).Id, id as string);
             var result = await _client.DeleteDocumentAsync(docUri, _options);
@@ -99,11 +98,12 @@ namespace DangEasy.CosmosDb.Repository
         }
 
 
-        public async Task<TEntity> GetByIdAsync(TId id)
+        public async Task<TEntity> GetByIdAsync(object id)
         {
             var retVal = await GetDocumentByIdAsync(id);
             return (TEntity)(dynamic)retVal;
         }
+
 
         private async Task<Document> GetDocumentByIdAsync(object id)
         {
