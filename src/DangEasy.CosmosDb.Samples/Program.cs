@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DangEasy.CosmosDb.Repository;
-using DangEasy.CosmosDb.Samples.Model;
+using Example.Console.Models;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 
-namespace DangEasy.CosmosDb.Samples
+namespace Example.Console
 {
     internal class Program
     {
@@ -46,7 +46,7 @@ namespace DangEasy.CosmosDb.Samples
             DeleteDatabase(databaseName);
 
             // create repository for persons and set Person.FullName property as identity field (overriding default Id property name)
-            var repo = new DocumentDbRepository<Person>(Client, databaseName);
+            var repo = new DocumentDbRepository<string, Person>(Client, databaseName);
 
             // output all persons in our database, nothing there yet
             await PrintPersonCollection(repo);
@@ -97,22 +97,22 @@ namespace DangEasy.CosmosDb.Samples
 
             // get Matt by his Id
             Person justMatt = await repo.GetByIdAsync(matt.Id);
-            Console.WriteLine("GetByIdAsync result: " + justMatt);
+            System.Console.WriteLine("GetByIdAsync result: " + justMatt);
 
             // ... or by his first name
             Person firstMatt = await repo.FirstOrDefaultAsync(p => p.FirstName.Equals("matt", StringComparison.OrdinalIgnoreCase));
-            Console.WriteLine("First: " + firstMatt);
+            System.Console.WriteLine("First: " + firstMatt);
 
             // query all the smiths
-            var smiths = (await repo.WhereAsync(p => p.LastName.Equals("Smith"))).ToList();
-            Console.WriteLine(smiths.Count);
+            var smiths = (await repo.QueryAsync(p => p.LastName.Equals("Smith"))).ToList();
+            System.Console.WriteLine(smiths.Count);
 
             // use IQueryable, as for now supported expressions are 'Queryable.Where', 'Queryable.Select' & 'Queryable.SelectMany'
             var allSmithsPhones =
-                (await repo.QueryAsync()).SelectMany(p => p.PhoneNumbers).Select(p => p.Type);
+                (await repo.GetAllAsync()).SelectMany(p => p.PhoneNumbers).Select(p => p.Type);
             foreach (var phone in allSmithsPhones)
             {
-                Console.WriteLine(phone);
+                System.Console.WriteLine(phone);
             }
 
             // count all persons
@@ -133,11 +133,11 @@ namespace DangEasy.CosmosDb.Samples
             DeleteDatabase(databaseName);
         }
 
-        private static async Task PrintPersonCollection(DocumentDbRepository<Person> repo)
+        private static async Task PrintPersonCollection(DocumentDbRepository<string, Person> repo)
         {
             IEnumerable<Person> persons = await repo.GetAllAsync();
 
-            persons.ToList().ForEach(Console.WriteLine);
+            persons.ToList().ForEach(System.Console.WriteLine);
         }
 
 

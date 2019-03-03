@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DangEasy.CosmosDb.Samples.Model
+namespace Example.Console.Models
 {
     public class Person
     {
