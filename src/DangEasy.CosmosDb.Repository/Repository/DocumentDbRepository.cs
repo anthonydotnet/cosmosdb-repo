@@ -82,7 +82,7 @@ namespace DangEasy.CosmosDb.Repository
 
         public async Task<int> CountAsync(string sqlQuery)
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink, sqlQuery).Count();
+            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery).AsEnumerable().ToList().Count();
         }
 
 
@@ -153,11 +153,23 @@ namespace DangEasy.CosmosDb.Repository
 
 
 
-
         #region DB init 
         //--
         // DB Init / Creation helpers
         //--
+
+        private async Task<Database> GetOrCreateDatabaseAsync(RequestOptions options = null)
+        {
+            Database database = _client.CreateDatabaseQuery().Where(db => db.Id == _databaseName).ToArray().FirstOrDefault();
+            if (database == null)
+            {
+                database = await _client.CreateDatabaseAsync(new Database { Id = _databaseName }, options);
+            }
+
+            return database;
+        }
+
+
         private async Task<DocumentCollection> GetOrCreateCollectionAsync(string collectionName)
         {
             DocumentCollection collection = _client.CreateDocumentCollectionQuery((await _database).SelfLink).Where(c => c.Id == collectionName).ToArray().FirstOrDefault();
@@ -180,16 +192,6 @@ namespace DangEasy.CosmosDb.Repository
             return collection;
         }
 
-        private async Task<Database> GetOrCreateDatabaseAsync(RequestOptions options = null)
-        {
-            Database database = _client.CreateDatabaseQuery().Where(db => db.Id == _databaseName).ToArray().FirstOrDefault();
-            if (database == null)
-            {
-                database = await _client.CreateDatabaseAsync(new Database { Id = _databaseName }, options);
-            }
-
-            return database;
-        }
 
         #endregion
 

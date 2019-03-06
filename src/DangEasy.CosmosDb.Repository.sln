@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Example", "_Example", "{53
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Console", "Example.Console\Example.Console.csproj", "{4CB53728-645E-422C-AD54-9FD3727DB0C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DangEasy.CosmosDb.Repository.Test", "DangEasy.CosmosDb.Repository.Test\DangEasy.CosmosDb.Repository.Test.csproj", "{78CAD7EA-6385-41B0-B44C-F21349F54653}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{4CB53728-645E-422C-AD54-9FD3727DB0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CB53728-645E-422C-AD54-9FD3727DB0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CB53728-645E-422C-AD54-9FD3727DB0C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78CAD7EA-6385-41B0-B44C-F21349F54653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78CAD7EA-6385-41B0-B44C-F21349F54653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78CAD7EA-6385-41B0-B44C-F21349F54653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78CAD7EA-6385-41B0-B44C-F21349F54653}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
