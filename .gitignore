@@ -161,6 +161,6 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-#src/DangEasy\.CosmosDb\.Repository\.Test/appsettings\.json
+src/DangEasy\.CosmosDb\.Repository\.Test/appsettings\.json
 
-#src/Example\.Console/appsettings\.json
+src/Example\.Console/appsettings\.json
