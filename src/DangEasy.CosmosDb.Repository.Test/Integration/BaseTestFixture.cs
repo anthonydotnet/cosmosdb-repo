@@ -60,7 +60,7 @@ namespace DangEasy.CosmosDb.Repository.Test.Integration
         {
             string endpointUrl = _config["AppSettings:EndpointUrl"];
             string authorizationKey = _config["AppSettings:AuthorizationKey"];
-            _databaseName = _config["AppSettings:MyDatabaseName"];
+            _databaseName = _config["AppSettings:DatabaseName"];
 
             Assert.NotNull(endpointUrl);
             Assert.NotNull(authorizationKey);

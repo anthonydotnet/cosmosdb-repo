@@ -37,7 +37,7 @@ namespace Example.Console
         {
             string endpointUrl = Configuration["AppSettings:EndpointUrl"];
             string authorizationKey = Configuration["AppSettings:AuthorizationKey"];
-            string databaseName = Configuration["AppSettings:MyDatabaseName"];
+            string databaseName = Configuration["AppSettings:DatabaseName"];
 
             // create the Azure DocumentDB client
             var client = new DocumentClient(new Uri(endpointUrl), authorizationKey);
