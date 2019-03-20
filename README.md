@@ -1,6 +1,6 @@
 Simple repository pattern for [Cosmos DB](https://azure.microsoft.com/en-us/services/cosmos-db/) for dotnet Standard 2.0. 
 
-[![Nuget](https://img.shields.io/badge/nuget-0.1.0-blue.svg?maxAge=3600)](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository)
+[![Nuget](https://img.shields.io/badge/nuget-0.3.0-blue.svg?maxAge=3600)](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository)
 
 Originally forked from [https://github.com/Crokus/cosmosdb-repo](https://github.com/Crokus/cosmosdb-repo) 
 

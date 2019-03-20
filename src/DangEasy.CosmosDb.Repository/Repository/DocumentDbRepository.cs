@@ -105,7 +105,7 @@ namespace DangEasy.CosmosDb.Repository
         }
 
 
-        private async Task<Document> GetDocumentByIdAsync(object id)
+        protected async Task<Document> GetDocumentByIdAsync(object id)
         {
             return _client.CreateDocumentQuery<Document>((await _collection).SelfLink).Where(d => d.Id == id.ToString()).AsEnumerable().FirstOrDefault();
         }
@@ -158,7 +158,7 @@ namespace DangEasy.CosmosDb.Repository
         // DB Init / Creation helpers
         //--
 
-        private async Task<Database> GetOrCreateDatabaseAsync(RequestOptions options = null)
+        protected async Task<Database> GetOrCreateDatabaseAsync(RequestOptions options = null)
         {
             Database database = _client.CreateDatabaseQuery().Where(db => db.Id == _databaseName).ToArray().FirstOrDefault();
             if (database == null)
@@ -170,7 +170,7 @@ namespace DangEasy.CosmosDb.Repository
         }
 
 
-        private async Task<DocumentCollection> GetOrCreateCollectionAsync(string collectionName)
+        protected async Task<DocumentCollection> GetOrCreateCollectionAsync(string collectionName)
         {
             DocumentCollection collection = _client.CreateDocumentCollectionQuery((await _database).SelfLink).Where(c => c.Id == collectionName).ToArray().FirstOrDefault();
 
@@ -199,7 +199,7 @@ namespace DangEasy.CosmosDb.Repository
 
         #region Reflection
 
-        private object GetId(TEntity entity)
+        protected object GetId(TEntity entity)
         {
             var p = Expression.Parameter(typeof(TEntity), "x");
             Expression body = Expression.Property(p, "id"); // lowercase in CosmosDb
