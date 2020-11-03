@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>DangEasy.CosmosDb.Repository</PackageId>
-    <PackageVersion>0.3.0</PackageVersion>
+    <PackageVersion>0.4.0</PackageVersion>
     <Authors>Anthony Dang</Authors>
     <Owners>Anthony Dang</Owners>
     <PackageProjectUrl>https://github.com/anthonydotnet/cosmosdb-repo</PackageProjectUrl>
@@ -24,10 +24,12 @@
     <Compile Remove="Interfaces\IDocument.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MiniProfiler.AspNetCore" Version="4.0.138" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.2.2" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+    <PackageReference Include="MiniProfiler.AspNetCore" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="3.0.7" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.12.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2"><PrivateAssets>all</PrivateAssets>
+<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+</PackageReference>
     <PackageReference Include="DangEasy.Interfaces" Version="0.3.0" />
   </ItemGroup>
   <ItemGroup>
