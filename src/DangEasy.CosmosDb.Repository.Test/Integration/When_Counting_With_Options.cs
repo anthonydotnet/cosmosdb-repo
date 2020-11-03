@@ -1,10 +1,17 @@
 using System;
 using Xunit;
+using Microsoft.Azure.Documents.Client;
 
 namespace DangEasy.CosmosDb.Repository.Test.Integration
 {
-    public class When_Counting : BaseTestFixture
+    public class When_Counting_With_Options : BaseTestFixture
     {
+        public When_Counting_With_Options(): base(new RequestOptions(), new FeedOptions { EnableCrossPartitionQuery = true })
+        {
+
+        }
+
+
         [Fact]
         public void Count_Has_Valid_Result()
         {

@@ -20,11 +20,9 @@ namespace DangEasy.CosmosDb.Repository.Test.Integration
         protected Profile _profile;
         protected Uri _collectionUri;
 
-        public BaseTestFixture()
+        public BaseTestFixture(RequestOptions requestOptions = null, FeedOptions feedOptions = null)
         {
-            Console.WriteLine($"Base Constructor");
-
-            InitRepository();
+            InitRepository(requestOptions, feedOptions);
 
             // ensure db is deleted before starting
             DeleteDatabase();
@@ -50,13 +48,11 @@ namespace DangEasy.CosmosDb.Repository.Test.Integration
 
         public void Dispose()
         {
-            Console.WriteLine($"Base Dispose");
             DeleteDatabase();
-            Console.WriteLine($"===");
         }
 
 
-        private void InitRepository()
+        private void InitRepository(RequestOptions requestOptions, FeedOptions feedOptions)
         {
             string endpointUrl = _config["AppSettings:EndpointUrl"];
             string authorizationKey = _config["AppSettings:AuthorizationKey"];

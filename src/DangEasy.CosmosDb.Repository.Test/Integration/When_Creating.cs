@@ -13,7 +13,6 @@ namespace DangEasy.CosmosDb.Repository.Test.Integration
             Assert.NotEmpty(res.Id);
         }
 
-
         [Fact]
         public void Duplicate_Document_Causes_Exception()
         {

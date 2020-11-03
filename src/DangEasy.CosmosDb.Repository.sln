@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Console", "Example.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DangEasy.CosmosDb.Repository.Test", "DangEasy.CosmosDb.Repository.Test\DangEasy.CosmosDb.Repository.Test.csproj", "{78CAD7EA-6385-41B0-B44C-F21349F54653}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Test", "_Test", "{A44E02F7-7D46-43BF-AF9D-F46398471548}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4CB53728-645E-422C-AD54-9FD3727DB0C1} = {5364877A-FA17-4D8F-B04B-53BA581F90D1}
+		{78CAD7EA-6385-41B0-B44C-F21349F54653} = {A44E02F7-7D46-43BF-AF9D-F46398471548}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8

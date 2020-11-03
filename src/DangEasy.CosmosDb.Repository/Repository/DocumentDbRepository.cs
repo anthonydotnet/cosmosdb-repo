@@ -21,13 +21,17 @@ namespace DangEasy.CosmosDb.Repository
 
         protected readonly AsyncLazy<Database> _database;
         protected AsyncLazy<DocumentCollection> _collection;
-        protected RequestOptions _options;
 
-        public DocumentDbRepository(DocumentClient client, string databaseName, string collectionName = null, RequestOptions options = null)
+        protected readonly RequestOptions _requestOptions;
+        protected readonly FeedOptions _feedOptions;
+
+        public DocumentDbRepository(DocumentClient client, string databaseName, string collectionName = null, RequestOptions requestOptions = null, FeedOptions feedOptions = null)
         {
             _client = client;
             _databaseName = databaseName;
-            _options = options;
+            _requestOptions = requestOptions;
+            _feedOptions = feedOptions;
+
             //if (options == null)
             //{
             //options = new RequestOptions
@@ -36,14 +40,14 @@ namespace DangEasy.CosmosDb.Repository
             //    PartitionKey = new PartitionKey("/id")
             //};
             //}
-            _database = new AsyncLazy<Database>(async () => await GetOrCreateDatabaseAsync(options));
+            _database = new AsyncLazy<Database>(async () => await GetOrCreateDatabaseAsync(requestOptions));
             _collection = new AsyncLazy<DocumentCollection>(async () => await GetOrCreateCollectionAsync(collectionName ?? typeof(TEntity).Name));
         }
 
 
         public async Task<TEntity> CreateAsync(TEntity entity)
         {
-            var createdDoc = await _client.CreateDocumentAsync((await _collection).SelfLink, entity, _options);
+            var createdDoc = await _client.CreateDocumentAsync((await _collection).SelfLink, entity, _requestOptions);
             var createdEntity = JsonConvert.DeserializeObject<TEntity>(createdDoc.Resource.ToString());
 
 
@@ -55,7 +59,7 @@ namespace DangEasy.CosmosDb.Repository
         {
             var documentUri = UriFactory.CreateDocumentUri(_databaseName, (await _collection).Id, (string)GetId(entity));
 
-            var updatedDoc = await _client.ReplaceDocumentAsync(documentUri, entity, _options);
+            var updatedDoc = await _client.ReplaceDocumentAsync(documentUri, entity, _requestOptions);
 
             var updatedEntity = JsonConvert.DeserializeObject<TEntity>(updatedDoc.Resource.ToString());
 
@@ -66,7 +70,7 @@ namespace DangEasy.CosmosDb.Repository
         public async Task<bool> DeleteAsync(object id)
         {
             var docUri = UriFactory.CreateDocumentUri((await _database).Id, (await _collection).Id, id as string);
-            var result = await _client.DeleteDocumentAsync(docUri, _options);
+            var result = await _client.DeleteDocumentAsync(docUri, _requestOptions);
 
             var isSuccess = result.StatusCode == HttpStatusCode.NoContent;
 
@@ -76,25 +80,25 @@ namespace DangEasy.CosmosDb.Repository
 
         public async Task<int> CountAsync()
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink).Count();
+            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink, _feedOptions).Count();
         }
 
 
         public async Task<int> CountAsync(string sqlQuery)
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery).AsEnumerable().ToList().Count();
+            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery, _feedOptions).AsEnumerable().ToList().Count();
         }
 
 
         public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink).Where(predicate).Count();
+            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink, _feedOptions).Where(predicate).Count();
         }
 
 
         public async Task<IQueryable<TEntity>> GetAllAsync()
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink);
+            return _client.CreateDocumentQuery<TEntity>((await _collection).SelfLink, _feedOptions);
         }
 
 
@@ -107,14 +111,18 @@ namespace DangEasy.CosmosDb.Repository
 
         protected async Task<Document> GetDocumentByIdAsync(object id)
         {
-            return _client.CreateDocumentQuery<Document>((await _collection).SelfLink).Where(d => d.Id == id.ToString()).AsEnumerable().FirstOrDefault();
+            return
+                _client.CreateDocumentQuery<Document>((await _collection).SelfLink, _feedOptions)
+                    .Where(d => d.Id == id.ToString())
+                    .AsEnumerable()
+                    .FirstOrDefault();
         }
 
 
         public async Task<TEntity> FirstOrDefaultAsync(string sqlQuery)
         {
             return
-               _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery)
+               _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery, _feedOptions)
                    .AsEnumerable()
                    .FirstOrDefault();
         }
@@ -123,7 +131,7 @@ namespace DangEasy.CosmosDb.Repository
         public async Task<TEntity> FirstOrDefaultAsync(Func<TEntity, bool> predicate)
         {
             return
-                _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink)
+                _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, _feedOptions)
                     .Where(predicate)
                     .AsEnumerable()
                     .FirstOrDefault();
@@ -132,13 +140,13 @@ namespace DangEasy.CosmosDb.Repository
 
         public async Task<IQueryable<TEntity>> QueryAsync(string sqlQuery)
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery);
+            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, sqlQuery, _feedOptions);
         }
 
 
         public async Task<IQueryable<TEntity>> QueryAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink)
+            return _client.CreateDocumentQuery<TEntity>((await _collection).DocumentsLink, _feedOptions)
                 .Where(predicate);
         }
 
@@ -147,7 +155,7 @@ namespace DangEasy.CosmosDb.Repository
         {
             var sprocUri = UriFactory.CreateStoredProcedureUri((await _database).Id, (await _collection).Id, sprocName);
 
-            return await _client.ExecuteStoredProcedureAsync<TResult>(sprocUri, parameters);
+            return await _client.ExecuteStoredProcedureAsync<TResult>(sprocUri, _requestOptions, parameters);
         }
 
 
