@@ -1,12 +1,8 @@
 Simple repository pattern for [Cosmos DB](https://azure.microsoft.com/en-us/services/cosmos-db/) for dotnet Standard 2.0. 
 
-[![Nuget](https://img.shields.io/badge/nuget-0.3.0-blue.svg?maxAge=3600)](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository)
-
 Originally forked from [https://github.com/Crokus/cosmosdb-repo](https://github.com/Crokus/cosmosdb-repo) 
 
-
 # Installation
-
 Use NuGet to install the [package](https://www.nuget.org/packages/DangEasy.CosmosDB.Repository/).
 
 ```
@@ -14,39 +10,16 @@ PM> Install-Package DangEasy.CosmosDB.Repository
 ```
 
 # Getting started
-
-## Step 1: Get Azure CosmosDB client
-
 Before you can play with CosmosDB you need to create the Azure Client by passing your endopointUrl and  authorizationKey (primary).
-
-```csharp
-internal class Program
-{
-    public DocumentClient Client { get; set; }
-
-	private static void Main(string[] args)
-	{		
-		// get the Azure DocumentDB client
-		Client = init.GetClient(<EndpointUrl>, <AuthorizationKey>);
-
-        // Run demo
-        var p = new Program();
-        p.MainAsync().Wait();
-	}
-}    
-```
-
-## Step 2: Create Repository and use it with your POCO objects
-
-With the client in place create a repository providing database name and collection name. If you do not pass in a collection name, then the name of the Type will be used. In the example below the collection will be called Person. 
-
-Now it's really easy to do the CRUD operations:
 
 ```csharp
 public async Task MainAsync(string[] args)
 {
+	// get the Azure DocumentDB client
+    var client = new DocumentClient(new Uri(<EndpointUrl>), <AuthorizationKey>);
+        
 	// create repository for persons
-	var repo = new DocumentDbRepository<Person>(Client, <MyDatabaseName>);
+	var repo = new DocumentDbRepository<Person>(client, <MyDatabaseName>);
 
 	// create a new person
 	Person matt = new Person
@@ -112,7 +85,6 @@ public async Task MainAsync(string[] args)
 }
 ```
 
-Full example can be found [here](https://github.com/anthonydotnet/cosmosdb-repo/blob/master/src/DangEasy.CosmosDB.Repository.Samples/Program.cs).
 
 # License
 
